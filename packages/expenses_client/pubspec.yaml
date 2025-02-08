@@ -2,6 +2,7 @@ name: expenses_client
 description: "A new Flutter package project."
 version: 0.0.1
 homepage:
+publish_to: none  
 
 environment:
   sdk: ^3.6.2
@@ -10,14 +11,18 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  sqflite:
+  path:
   data:
     path: ../data
+  
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
-
+  mockito: ^5.4.5
+  build_runner: ^2.4.14
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
