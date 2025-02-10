@@ -31,6 +31,7 @@ class DatabaseHelper {
     CREATE TABLE Expenses (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       category INTEGER NOT NULL,
+      note TEXT NOT NULL,
       amount REAL NOT NULL,
       date TEXT NOT NULL,
       FOREIGN KEY (category) REFERENCES Categories(id)

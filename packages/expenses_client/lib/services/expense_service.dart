@@ -1,32 +1,33 @@
-import 'package:expenses_client/data/expense_repository.dart';
-import 'package:expenses_client/models/expense.dart';
+import 'package:expenses_client/expenses_client.dart';
 
 class ExpenseService {
   final ExpenseRepository _expenseRepository;
 
-  ExpenseService({ ExpenseRepository? expenseRepository})
+  ExpenseService({ExpenseRepository? expenseRepository})
       : _expenseRepository = expenseRepository ?? ExpenseRepository();
 
-  Future<List<Expense>> getExpenses({
-    DateTime? startDate,
-    DateTime? endDate,
-    List<int>? categoryIds,
-    double? minAmount,
-    double? maxAmount,
-    String? sortBy,
-    String? sortOrder,
-  }) async {
+  Future<List<ExpenseCategory>> getExpenses(
+      {DateTime? startDate,
+      DateTime? endDate,
+      List<int>? categoryIds,
+      double? minAmount,
+      double? maxAmount,
+      String? sortBy,
+      // "amount", "date", "category"
+      String? sortOrder, // "ASC", "DESC"
+      int? limit,
+      int? offset}) async {
     return _expenseRepository.getExpenses(
-      startDate: startDate,
-      endDate: endDate,
-      categoryIds: categoryIds,
-      minAmount: minAmount,
-      maxAmount: maxAmount,
-      sortBy: sortBy,
-      sortOrder: sortOrder,
-    );
+        startDate: startDate,
+        endDate: endDate,
+        categoryIds: categoryIds,
+        minAmount: minAmount,
+        maxAmount: maxAmount,
+        sortBy: sortBy,
+        sortOrder: sortOrder,
+        limit: limit,
+        offset: offset);
   }
-
 
   Future<Expense?> addExpense(Expense expense) async {
     final id = await _expenseRepository.addExpense(expense);

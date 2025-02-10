@@ -5,8 +5,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i3;
 
-import 'package:expenses_client/data/expense_repository.dart' as _i2;
-import 'package:expenses_client/models/expense.dart' as _i4;
+import 'package:expenses_client/expenses_client.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -32,7 +31,7 @@ class MockExpenseRepository extends _i1.Mock implements _i2.ExpenseRepository {
   }
 
   @override
-  _i3.Future<List<_i4.Expense>> getExpenses({
+  _i3.Future<List<_i2.ExpenseCategory>> getExpenses({
     DateTime? startDate,
     DateTime? endDate,
     List<int>? categoryIds,
@@ -40,6 +39,8 @@ class MockExpenseRepository extends _i1.Mock implements _i2.ExpenseRepository {
     double? maxAmount,
     String? sortBy,
     String? sortOrder,
+    int? limit,
+    int? offset,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#getExpenses, [], {
@@ -50,13 +51,17 @@ class MockExpenseRepository extends _i1.Mock implements _i2.ExpenseRepository {
               #maxAmount: maxAmount,
               #sortBy: sortBy,
               #sortOrder: sortOrder,
+              #limit: limit,
+              #offset: offset,
             }),
-            returnValue: _i3.Future<List<_i4.Expense>>.value(<_i4.Expense>[]),
+            returnValue: _i3.Future<List<_i2.ExpenseCategory>>.value(
+              <_i2.ExpenseCategory>[],
+            ),
           )
-          as _i3.Future<List<_i4.Expense>>);
+          as _i3.Future<List<_i2.ExpenseCategory>>);
 
   @override
-  _i3.Future<int?> addExpense(_i4.Expense? expense) =>
+  _i3.Future<int?> addExpense(_i2.Expense? expense) =>
       (super.noSuchMethod(
             Invocation.method(#addExpense, [expense]),
             returnValue: _i3.Future<int?>.value(),
@@ -64,7 +69,7 @@ class MockExpenseRepository extends _i1.Mock implements _i2.ExpenseRepository {
           as _i3.Future<int?>);
 
   @override
-  _i3.Future<int> updateExpense(_i4.Expense? expense) =>
+  _i3.Future<int> updateExpense(_i2.Expense? expense) =>
       (super.noSuchMethod(
             Invocation.method(#updateExpense, [expense]),
             returnValue: _i3.Future<int>.value(0),
@@ -78,4 +83,24 @@ class MockExpenseRepository extends _i1.Mock implements _i2.ExpenseRepository {
             returnValue: _i3.Future<int>.value(0),
           )
           as _i3.Future<int>);
+
+  @override
+  _i3.Future<double> getExpensesSum({
+    DateTime? startDate,
+    DateTime? endDate,
+    List<int>? categoryIds,
+    double? minAmount,
+    double? maxAmount,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#getExpensesSum, [], {
+              #startDate: startDate,
+              #endDate: endDate,
+              #categoryIds: categoryIds,
+              #minAmount: minAmount,
+              #maxAmount: maxAmount,
+            }),
+            returnValue: _i3.Future<double>.value(0.0),
+          )
+          as _i3.Future<double>);
 }

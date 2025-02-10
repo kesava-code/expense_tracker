@@ -1,4 +1,5 @@
 import 'package:data/data.dart'; // Import the data package
+import 'package:expenses_client/expenses_client.dart';
 import 'package:expenses_client/models/expense.dart'; // Import Expense model
 
 class ExpenseRepository {
@@ -10,6 +11,7 @@ List<String> _buildWhereClause(
     List<int>? categoryIds,
     double? minAmount,
     double? maxAmount,
+    
   ) {
     final List<String> whereClauses = [];
     final List<String> whereArgs = [];
@@ -42,7 +44,7 @@ List<String> _buildWhereClause(
     return [whereClauses.join(' AND '), whereArgs.join(',')];
   }
 
-  Future<List<Expense>> getExpenses({
+  Future<List<ExpenseCategory>> getExpenses({
     DateTime? startDate,
     DateTime? endDate,
     List<int>? categoryIds,
@@ -50,6 +52,8 @@ List<String> _buildWhereClause(
     double? maxAmount,
     String? sortBy, // "amount", "date", "category"
     String? sortOrder, // "ASC", "DESC"
+    int? limit,
+    int? offset
   }) async {
     final db = await _databaseHelper.database;
     final whereClauseData = _buildWhereClause(startDate, endDate, categoryIds, minAmount, maxAmount);
@@ -61,13 +65,33 @@ List<String> _buildWhereClause(
       orderByClause = 'ORDER BY $sortBy ${sortOrder ?? "ASC"}';
     }
 
-    final query = 'SELECT * FROM Expenses ${whereClause.isNotEmpty ? 'WHERE $whereClause' : ''} $orderByClause';
+    String limitClause = '';
+    if (limit != null) {
+      limitClause = 'LIMIT $limit';
+      if (offset != null) { // Add offset to limit clause
+        limitClause += ' OFFSET $offset';
+      }
+    } else if (offset != null) { // Handle offset only case
+      limitClause = 'OFFSET $offset';
+    }
+
+    //final query = 'SELECT * FROM Expenses ${whereClause.isNotEmpty ? 'WHERE $whereClause' : ''} $orderByClause $limitClause';
+    final query = '''
+      SELECT 
+        e.*,  -- All columns from the Expenses table
+        c.category AS categoryName -- The category name from the Categories table
+      FROM Expenses e
+      INNER JOIN Categories c ON e.category = c.id
+      ${whereClause.isNotEmpty ? 'WHERE $whereClause' : ''}
+      $orderByClause
+      $limitClause
+    ''';
     final List<Map<String, dynamic>> maps = await db.rawQuery(query, whereArgs);
 
     return List.generate(maps.length, (i) {
       final map = maps[i];
       map['date'] = DateTime.parse(map['date']);
-      return Expense.fromMap(map);
+      return ExpenseCategory.fromMap(map);
     });
   }
 
@@ -105,11 +129,11 @@ Future<double> getExpensesSum({
     final whereArgs = whereClauseData[1].split(',');
 
 
-    final query = 'SELECT SUM(amount) FROM Expenses ${whereClause.isNotEmpty ? 'WHERE $whereClause' : ''}';
+    final query = 'SELECT SUM(amount) as sum FROM Expenses ${whereClause.isNotEmpty ? 'WHERE $whereClause' : ''}';
     final result = await db.rawQuery(query, whereArgs);
 
-    final sum = result.isNotEmpty && result[0]['SUM(amount)'] != null
-        ? double.parse(result[0]['SUM(amount)'].toString())
+    final sum = result.isNotEmpty && result[0]['sum'] != null
+        ? double.parse(result[0]['sum'].toString())
         : 0.0;
 
     return sum;

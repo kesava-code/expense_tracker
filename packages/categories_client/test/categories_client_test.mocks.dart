@@ -33,9 +33,19 @@ class MockCategoryRepository extends _i1.Mock
   }
 
   @override
-  _i3.Future<List<_i4.Category>> getCategories({String? searchTerm}) =>
+  _i3.Future<List<_i4.Category>> getCategories({
+    List<int>? ids,
+    String? searchTerm,
+    String? sortBy,
+    String? sortOrder,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#getCategories, [], {#searchTerm: searchTerm}),
+            Invocation.method(#getCategories, [], {
+              #ids: ids,
+              #searchTerm: searchTerm,
+              #sortBy: sortBy,
+              #sortOrder: sortOrder,
+            }),
             returnValue: _i3.Future<List<_i4.Category>>.value(<_i4.Category>[]),
           )
           as _i3.Future<List<_i4.Category>>);
